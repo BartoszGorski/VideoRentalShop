@@ -266,13 +266,21 @@ public class AppWindow {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                String message = "Application made by Bartosz Górski.\n\n" +
-                        "Data files are saving to default folder (./src/saves/) if you don't set other path.\n" +
-                        "When you save, and close app. Next time you run it all should load automaticly.\n" +
-                        "Tables can be load apart.\n" +
-                        "You can edit FirstName and LastName.\n" +
-                        "If you want to remove/rent/return first select the element, then click the button.\n" +
-                        "Don't forget about saving before close application!";
+                String message = "- Application made by Bartosz Górski.\n\n" +
+                        "- Data files are saving to default folder (./src/saves/) if you do not set other path.\n" +
+                        "- Application automaticly load last saves after launch.\n" +
+                        "- Tables can be load individually.\n" +
+                        "- If you want to remove/rent/return - select the element, then click the button.\n" +
+			"- Option \"Change save path\" open 5 windows one by one. Each window represent other table.\n" +
+			"Simply choose new path, give file name and accept.\n" +
+			"\n" +
+                        "- Don not forget about saving before close application!\n" +
+			"\n" +
+			"- How to rent movie:\n" +
+			"Available Tab -> select movie -> Rent button -> select person.\n" +
+			"- How to return movie to database:\n" +
+			"Rented -> select person -> Return Movie Button\n" +
+			"- Client table is updating after rent/return operation\n";
                 JOptionPane.showMessageDialog(app, message);
             }
         });
