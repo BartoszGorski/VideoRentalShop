@@ -1,3 +1,8 @@
+Video Rental Shop Application
+
+Made by Bartosz Górski
+
+
 Instalation:
 
 Linux:
