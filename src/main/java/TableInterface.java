@@ -1,0 +1,4 @@
+
+interface TableInterface {
+    void updateDefaultDateRow();
+}
