@@ -11,8 +11,10 @@ public class FileOperator {
     private File configFile;
     private File saveFolder;
     private File configFolder;
+    private String fileKeyWord;
 
-    public FileOperator(String configPath, String defaultFilePath) {
+    public FileOperator(String configPath, String defaultFilePath, String fileKeyWord) {
+        this.fileKeyWord = fileKeyWord;
         configFile = new File(configPath);
         saveFile = new File(defaultFilePath);
         saveFolder = new File("./src/saves");
@@ -63,15 +65,22 @@ public class FileOperator {
             saveFolder.mkdir();
         }
 
-        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(saveFile))) {
+        Vector myVec = new Vector();
+        myVec.addElement(fileKeyWord);
+
+        try (ObjectOutputStream out = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(saveFile)))) {
+
+            out.writeObject(myVec);
             out.writeObject(tableModel.getDataVector());
+
             out.close();
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+
     }
 
-    public void saveList(DefaultListModel<String> ListModel) {
+    public void saveList(DefaultListModel<String> listModel) {
         saveConfigFilePath();
 
         if (!saveFolder.exists()) {
@@ -79,8 +88,9 @@ public class FileOperator {
         }
 
         try (OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(saveFile))) {
-            for (int i = 0; i < ListModel.getSize(); i++) {
-                out.write(ListModel.getElementAt(i) + "\n");
+            out.write(fileKeyWord + "\n");
+            for (int i = 0; i < listModel.getSize(); i++) {
+                out.write(listModel.getElementAt(i) + "\n");
             }
             out.close();
         } catch (Exception ex) {
@@ -88,48 +98,88 @@ public class FileOperator {
         }
     }
 
-    public void loadTable(JFrame frame, DefaultTableModel tableModel) {
+    public boolean loadTable(JFrame frame, DefaultTableModel tableModel) {
         if (myJFileChooser.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION) {
-            loadTable(myJFileChooser.getSelectedFile(), tableModel);
+            return loadTable(myJFileChooser.getSelectedFile(), tableModel);
         }
+        return false;
     }
 
-    private void loadTable(File f, DefaultTableModel tableModel) {
-        try {
-            for (int i = tableModel.getRowCount() - 1; i >= 0; i--) {
-                tableModel.removeRow(i);
-            }
+    private boolean loadTable(File f, DefaultTableModel tableModel) {
 
-            ObjectInputStream in = new ObjectInputStream(new FileInputStream(f));
+
+        try (ObjectInputStream in = new ObjectInputStream(new BufferedInputStream(new FileInputStream(f)))) {
+
+
             Vector rowData = (Vector) in.readObject();
             Iterator itr = rowData.iterator();
-            while (itr.hasNext()) {
-                tableModel.addRow((Vector) itr.next());
+
+            if (itr.hasNext()) {
+                if (itr.next().equals(fileKeyWord)) {
+
+                    for (int i = tableModel.getRowCount() - 1; i > 0; i--) {
+                        tableModel.removeRow(i);
+                    }
+
+                    Vector rowData1 = (Vector) in.readObject();
+                    Iterator itr1 = rowData1.iterator();
+
+                    while (itr1.hasNext()) {
+                        tableModel.addRow((Vector) itr1.next());
+                    }
+                } else {
+                    in.close();
+                    return false;
+                }
+            } else {
+                in.close();
+                return false;
             }
+
             in.close();
+
+
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+
+        return true;
     }
 
-    public void loadList(JFrame farame, DefaultListModel<String> listModel) {
+    public boolean loadList(JFrame farame, DefaultListModel<String> listModel) {
         if (myJFileChooser.showOpenDialog(farame) == JFileChooser.APPROVE_OPTION) {
-            loadList(myJFileChooser.getSelectedFile(), listModel);
+            return loadList(myJFileChooser.getSelectedFile(), listModel);
         }
+        return false;
     }
 
-    private void loadList(File f, DefaultListModel<String> listModel) {
+    private boolean loadList(File f, DefaultListModel<String> listModel) {
         try {
-            listModel.removeAllElements();
             BufferedReader in = new BufferedReader(new FileReader(f.getPath()));
             String lineData = null;
-            while ((lineData = in.readLine()) != null) {
-                listModel.addElement(lineData);
+
+            if ((lineData = in.readLine()) != null) {
+                if (lineData.equals(fileKeyWord)) {
+                    listModel.removeAllElements();
+
+                    while ((lineData = in.readLine()) != null) {
+                        listModel.addElement(lineData);
+                    }
+                } else {
+                    in.close();
+                    return false;
+                }
+            } else {
+                in.close();
+                return false;
             }
             in.close();
+
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+
+        return true;
     }
 
     public void loadDefaultTable(DefaultTableModel tableModel) {

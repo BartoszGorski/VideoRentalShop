@@ -36,9 +36,13 @@ public class MyTable extends DefaultTableModel implements TableInterface {
         return defaultDataRow;
     }
 
+    @Override
     public Class getColumnClass(int c) {
         return getValueAt(0, c).getClass();
     }
 
-
+    @Override
+    public boolean isCellEditable(int row, int col) {
+        return false;
+    }
 }

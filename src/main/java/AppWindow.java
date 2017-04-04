@@ -85,10 +85,15 @@ public class AppWindow {
         availableAddButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String name = JOptionPane.showInputDialog("Give movie name:");
-                if (!name.equals("")) {
-                    availableListModel.addElement(name);
-                    availableList.setModel(availableListModel);
+                try {
+                    String name = "";
+                    name = JOptionPane.showInputDialog(null, "Give movie name:");
+                    if (!(name.equals(""))) {
+                        availableListModel.addElement(name);
+                        availableList.setModel(availableListModel);
+                    }
+                } catch (NullPointerException ex) {
+
                 }
             }
         });
@@ -106,55 +111,32 @@ public class AppWindow {
         availableLoadButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                availableFileOperator.loadList(app, availableListModel);
+
+                if (!(availableFileOperator.loadList(app, availableListModel))) {
+                    JOptionPane.showMessageDialog(app, "Something goes wrong. Check if you chose right file.");
+                }
                 availableList.setModel(availableListModel);
             }
         });
         availableRentButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (availableListModel.getSize() > 0 && !availableList.isSelectionEmpty()) {
-
-                    JComboBox jcb = new JComboBox(clientTableModel.getDataVector());
-                    if (JOptionPane.showConfirmDialog(null, jcb, "Select client", JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
-
-                        if (currentlyRentTable.getRowCount() > 0) {
-                            currentlyRentTableModel.addRow(currentlyRentTableModel.getDefaultData());
-                        } else {
-                            currentlyRentTableModel.setZeroDataVector();
-                        }
-
-                        currentlyRentTable.setValueAt(((Vector) jcb.getSelectedItem()).get(ID), currentlyRentTable.getRowCount() - 1, ID);
-                        currentlyRentTable.setValueAt(((Vector) jcb.getSelectedItem()).get(FIRSTNAME), currentlyRentTable.getRowCount() - 1, FIRSTNAME);
-                        currentlyRentTable.setValueAt(((Vector) jcb.getSelectedItem()).get(LASTNAME), currentlyRentTable.getRowCount() - 1, LASTNAME);
-                        currentlyRentTable.setValueAt(availableList.getSelectedValue(), currentlyRentTable.getRowCount() - 1, RENTEDMOVIE);
-
-                        if (!((Boolean) clientTable.getValueAt(jcb.getSelectedIndex(), RENTEDMOVIE))) {
-                            clientTable.setValueAt(true, jcb.getSelectedIndex(), RENTEDMOVIE);
-                        }
-
-                        clientTable.setValueAt(((Integer) clientTable.getValueAt(jcb.getSelectedIndex(), HOWMANYMOVIES)) + 1, jcb.getSelectedIndex(), HOWMANYMOVIES);
-
-                        historyListModel.addElement(((Vector) jcb.getSelectedItem()).get(FIRSTNAME) + " " + ((Vector) jcb.getSelectedItem()).get(LASTNAME) + " (ID: " + ((Vector) jcb.getSelectedItem()).get(ID)
-                                + ") rent \"" + availableList.getSelectedValue() + "\" - Data " + (new Date()));
-                        historyList.setModel(historyListModel);
-
-                        availableListModel.removeElementAt(availableList.getSelectedIndex());
-                        availableList.setModel(availableListModel);
-
-                        currentlyRentTableModel.fireTableDataChanged();
-                        clientTableModel.fireTableDataChanged();
-                    }
-                }
+                rentMovie();
             }
         });
         takeUpAddButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String name = JOptionPane.showInputDialog("Give movie name:");
-                if (!name.equals("")) {
-                    takeUpListModel.addElement(name);
-                    takeUpList.setModel(takeUpListModel);
+
+                try {
+                    String name = "";
+                    name = JOptionPane.showInputDialog(null, "Give movie name:");
+                    if (!(name.equals(""))) {
+                        takeUpListModel.addElement(name);
+                        takeUpList.setModel(takeUpListModel);
+                    }
+                } catch (NullPointerException ex) {
+
                 }
             }
         });
@@ -172,7 +154,9 @@ public class AppWindow {
         takeUpLoadButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                takeUpFileOperator.loadList(app, takeUpListModel);
+                if (!(takeUpFileOperator.loadList(app, takeUpListModel))) {
+                    JOptionPane.showMessageDialog(app, "Something goes wrong. Check if you chose right file.");
+                }
                 takeUpList.setModel(takeUpListModel);
             }
         });
@@ -194,7 +178,9 @@ public class AppWindow {
         clientLoadButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                clientFileOperator.loadTable(app, clientTableModel);
+                if (!(clientFileOperator.loadTable(app, clientTableModel))) {
+                    JOptionPane.showMessageDialog(app, "Something goes wrong. Check if you chose right file.");
+                }
             }
         });
         //endregion
@@ -203,7 +189,9 @@ public class AppWindow {
         currentlyRentLoadButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                currentlyRentFileOperator.loadTable(app, currentlyRentTableModel);
+                if (!(currentlyRentFileOperator.loadTable(app, currentlyRentTableModel))) {
+                    JOptionPane.showMessageDialog(app, "Something goes wrong. Check if you chose right file.");
+                }
             }
         });
         currentlyRentClearButton.addActionListener(new ActionListener() {
@@ -234,7 +222,9 @@ public class AppWindow {
         historyLoadButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                historyFileOperator.loadList(app, historyListModel);
+                if (!(historyFileOperator.loadList(app, historyListModel))) {
+                    JOptionPane.showMessageDialog(app, "Something goes wrong. Check if you chose right file.");
+                }
                 historyList.setModel(historyListModel);
             }
         });
@@ -259,7 +249,7 @@ public class AppWindow {
                 takeUpFileOperator.changeDefaultFilePath("Take-up List");
                 currentlyRentFileOperator.changeDefaultFilePath("Rented Table");
                 historyFileOperator.changeDefaultFilePath("History");
-                JOptionPane.showMessageDialog(app, "Don't forget to \"Save All\" for change settings.");
+                JOptionPane.showMessageDialog(app, "Do not forget to click \"Save All\" button for saving changes.");
             }
         });
         infoButton.addActionListener(new ActionListener() {
@@ -271,16 +261,17 @@ public class AppWindow {
                         "- Application automaticly load last saves after launch.\n" +
                         "- Tables can be load individually.\n" +
                         "- If you want to remove/rent/return - select the element, then click the button.\n" +
-			"- Option \"Change save path\" open 5 windows one by one. Each window represent other table.\n" +
-			"Simply choose new path, give file name and accept.\n" +
-			"\n" +
+                        "- Option \"Change save path\" open 5 windows one by one. Each window represent other table.\n" +
+                        "Simply choose new path, give file name and accept.\n" +
+                        "- Saves have special headlines, it is protection for open wrong file.\n" +
+                        "\n" +
                         "- Don not forget about saving before close application!\n" +
-			"\n" +
-			"- How to rent movie:\n" +
-			"Available Tab -> select movie -> Rent button -> select person.\n" +
-			"- How to return movie to database:\n" +
-			"Rented -> select person -> Return Movie Button\n" +
-			"- Client table is updating after rent/return operation\n";
+                        "\n" +
+                        "- How to rent movie:\n" +
+                        "Available Tab -> select movie -> Rent button -> select person.\n" +
+                        "- How to return movie to database:\n" +
+                        "Rented -> select person -> Return Movie Button\n" +
+                        "- Client table is updating after rent/return operation\n";
                 JOptionPane.showMessageDialog(app, message);
             }
         });
@@ -328,11 +319,11 @@ public class AppWindow {
     private void loadData() {
 
         //region File Operators
-        clientFileOperator = new FileOperator("./src/config/clientPathConfig", "./src/saves/clientTable");
-        availableFileOperator = new FileOperator("./src/config/availablePathConfig", "./src/saves/availableList");
-        takeUpFileOperator = new FileOperator("./src/config/takeUpPathConfig", "./src/saves/takeUpList");
-        currentlyRentFileOperator = new FileOperator("./src/config/currentlyRentPathConfig", "./src/saves/rentedTable");
-        historyFileOperator = new FileOperator("./src/config/historyPathConfig", "./src/saves/historyList");
+        clientFileOperator = new FileOperator("./src/config/clientPathConfig", "./src/saves/clientTable", "___CLIENTTABLE___");
+        availableFileOperator = new FileOperator("./src/config/availablePathConfig", "./src/saves/availableList", "___AVAILABLELIST___");
+        takeUpFileOperator = new FileOperator("./src/config/takeUpPathConfig", "./src/saves/takeUpList", "___TAKEUPLIST___");
+        currentlyRentFileOperator = new FileOperator("./src/config/currentlyRentPathConfig", "./src/saves/rentedTable", "___CURRENTLYRENTTABLE___");
+        historyFileOperator = new FileOperator("./src/config/historyPathConfig", "./src/saves/historyList", "___HISTORYLIST___");
         //endregion
 
         //region Load From default path
@@ -361,7 +352,7 @@ public class AppWindow {
             clientTableModel.setZeroDataVector();
         }
 
-        if (clientTable.getRowCount() < 0) {
+        if (clientTable.getSelectedRow() < 0) {
             clientTableModel.setValueAt(firstname, clientTable.getRowCount() - 1, FIRSTNAME);
             clientTableModel.setValueAt(lastname, clientTable.getRowCount() - 1, LASTNAME);
         } else {
@@ -419,6 +410,42 @@ public class AppWindow {
 
                 clientTableModel.fireTableDataChanged();
                 currentlyRentTableModel.fireTableDataChanged();
+            }
+        }
+    }
+
+    private void rentMovie() {
+        if (availableListModel.getSize() > 0 && !availableList.isSelectionEmpty()) {
+
+            JComboBox jcb = new JComboBox(clientTableModel.getDataVector());
+            if (JOptionPane.showConfirmDialog(app, jcb, "Select client: [ID, First name, Last name, Has any movie, How many, Registration date]", JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
+
+                if (currentlyRentTable.getRowCount() > 0) {
+                    currentlyRentTableModel.addRow(currentlyRentTableModel.getDefaultData());
+                } else {
+                    currentlyRentTableModel.setZeroDataVector();
+                }
+
+                currentlyRentTable.setValueAt(((Vector) jcb.getSelectedItem()).get(ID), currentlyRentTable.getRowCount() - 1, ID);
+                currentlyRentTable.setValueAt(((Vector) jcb.getSelectedItem()).get(FIRSTNAME), currentlyRentTable.getRowCount() - 1, FIRSTNAME);
+                currentlyRentTable.setValueAt(((Vector) jcb.getSelectedItem()).get(LASTNAME), currentlyRentTable.getRowCount() - 1, LASTNAME);
+                currentlyRentTable.setValueAt(availableList.getSelectedValue(), currentlyRentTable.getRowCount() - 1, RENTEDMOVIE);
+
+                if (!((Boolean) clientTable.getValueAt(jcb.getSelectedIndex(), RENTEDMOVIE))) {
+                    clientTable.setValueAt(true, jcb.getSelectedIndex(), RENTEDMOVIE);
+                }
+
+                clientTable.setValueAt(((Integer) clientTable.getValueAt(jcb.getSelectedIndex(), HOWMANYMOVIES)) + 1, jcb.getSelectedIndex(), HOWMANYMOVIES);
+
+                historyListModel.addElement(((Vector) jcb.getSelectedItem()).get(FIRSTNAME) + " " + ((Vector) jcb.getSelectedItem()).get(LASTNAME) + " (ID: " + ((Vector) jcb.getSelectedItem()).get(ID)
+                        + ") rent \"" + availableList.getSelectedValue() + "\" - Data " + (new Date()));
+                historyList.setModel(historyListModel);
+
+                availableListModel.removeElementAt(availableList.getSelectedIndex());
+                availableList.setModel(availableListModel);
+
+                currentlyRentTableModel.fireTableDataChanged();
+                clientTableModel.fireTableDataChanged();
             }
         }
     }

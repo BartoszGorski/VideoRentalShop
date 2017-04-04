@@ -5,7 +5,7 @@ version '1.0'
 apply plugin: 'java'
 apply plugin: 'application'
 
-sourceCompatibility = 1.7
+sourceCompatibility = 1.8
 
 mainClassName = 'Main'
 
@@ -17,10 +17,6 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.11'
     compile 'com.intellij:forms_rt:7.0.3'
 }
-
-// https://mvnrepository.com/artifact/com.intellij/forms_rt
-//compile group: 'com.intellij', name: 'forms_rt', version: '7.0.3'
-
 
 
 

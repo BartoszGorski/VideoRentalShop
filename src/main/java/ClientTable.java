@@ -3,7 +3,7 @@ import java.util.Date;
 public class ClientTable extends MyTable implements TableInterface {
 
     private static final String[] columnNames = {
-            "ID",
+            "client ID",
             "First Name",
             "Last Name",
             "Rented move",
@@ -28,10 +28,4 @@ public class ClientTable extends MyTable implements TableInterface {
         defaultDataRow[0] = IDnumber;
         defaultDataRow[5] = new Date();
     }
-
-    @Override
-    public boolean isCellEditable(int row, int col) {
-        return !(col == 0 || col >= 3);
-    }
-
 }

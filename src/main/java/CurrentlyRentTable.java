@@ -3,7 +3,7 @@ import java.util.Date;
 public class CurrentlyRentTable extends MyTable implements TableInterface {
 
     private static final String[] columnNames = {
-            "ID",
+            "client ID",
             "First Name",
             "Last Name",
             "Movie name",
@@ -18,10 +18,5 @@ public class CurrentlyRentTable extends MyTable implements TableInterface {
     @Override
     public void updateDefaultDateRow() {
         defaultDataRow[4] = new Date();
-    }
-
-    @Override
-    public boolean isCellEditable(int row, int col) {
-        return false;
     }
 }
